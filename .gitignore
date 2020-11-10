@@ -1,0 +1,5 @@
+test
+cache.db
+.vscode
+__pycache__
+.coverage

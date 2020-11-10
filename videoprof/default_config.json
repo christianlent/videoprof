@@ -1,0 +1,151 @@
+{
+    "levels": {
+        "success": {
+            "color": "green",
+            "flag": false
+        },
+        "warning": {
+            "color": "yellow",
+            "flag": false
+        },
+        "error": {
+            "color": "red",
+            "flag": true
+        }
+    },
+    "attributes": [
+        {
+            "title": "Container",
+            "track_type": "General",
+            "track_attribute": "format",
+            "default_level": "error",
+            "preferences": [
+                {
+                    "title": "MKV",
+                    "pattern": "Matroska",
+                    "level": "success"
+                }
+            ]
+        },
+        {
+            "title": "Video Codec",
+            "preferences": [
+                {
+                    "title": "AVC",
+                    "level": "success"
+                },
+                {
+                    "title": "HEVC",
+                    "level": "warning"
+                },
+                {
+                    "title": "VC-1",
+                    "level": "warning"
+                },
+                {
+                    "title": "MPEG Video",
+                    "level": "warning"
+                }
+            ],
+            "default_level": "error",
+            "track_type": "Video",
+            "track_attribute": "format"
+        },
+        {
+            "title": "Scan Type",
+            "preferences": [
+                {
+                    "title": "Progressive",
+                    "level": "success"
+                }
+            ],
+            "default_level": "error",
+            "track_type": "Video",
+            "track_attribute": "scan_type"
+        },
+        {
+            "title": "Resolution",
+            "preferences": [
+                {
+                    "title": "2160p",
+                    "pattern": "2160",
+                    "level": "success"
+                },
+                {
+                    "title": "1080p",
+                    "pattern": "1080",
+                    "level": "success"
+                },
+                {
+                    "title": "720p",
+                    "pattern": "720",
+                    "level": "warning"
+                },
+                {
+                    "title": "480p",
+                    "pattern": "480",
+                    "level": "warning"
+                }
+            ],
+            "default_level": "error",
+            "track_type": "Video",
+            "track_attribute": "height"
+        },
+        {
+            "title": "Audio Codec",
+            "preferences": [
+                {
+                    "title": "AAC",
+                    "level": "success"
+                },
+                {
+                    "title": "AC-3",
+                    "level": "success"
+                },
+                {
+                    "title": "E-AC-3",
+                    "level": "success"
+                },
+                {
+                    "title": "DTS",
+                    "level": "success"
+                },
+                {
+                    "title": "MLP FBA",
+                    "level": "success"
+                },
+                {
+                    "title": "PCM",
+                    "level": "success"
+                },
+                {
+                    "title": "MPEG Audio",
+                    "level": "warning"
+                }
+            ],
+            "default_level": "error",
+            "track_type": "Audio",
+            "track_attribute": "format"
+        },
+        {
+            "title": "Audio Channels",
+            "preferences": [
+                {
+                    "title": "8",
+                    "level": "success"
+                },
+                {
+                    "title": "7",
+                    "level": "success"
+                },
+                {
+                    "title": "6",
+                    "level": "success"
+                }
+            ],
+            "default_level": "warning",
+            "track_type": "Audio",
+            "track_attribute": "channel_s"
+        }
+    ]
+}
