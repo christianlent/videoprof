@@ -1,0 +1,50 @@
+[tool.poetry]
+name = "videoprof"
+version = "0.1.0"
+description = "Video Profiler - profile various attributes of local videos like resolution, codec, container, audio channels, and more!"
+authors = ["Christian Lent <christian@lent.us>"]
+license = "MIT"
+keywords = ["videoprof", "video", "profile", "profiler", "mediainfo", "resolution", "codec", "container", "collection"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Natural Language :: English",
+    "Operating System :: POSIX :: Linux",
+    "Topic :: Multimedia :: Video",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+]
+packages = [
+    { include = "videoprof" },
+    { include = "videoprof/py.typed" },
+]
+include=["videoprof/default_config.json"]
+
+[tool.poetry.scripts]
+videoprof = "videoprof.videoprof:main"
+
+[tool.poetry.dependencies]
+python = "^3.7"
+pymediainfo = "^5.0.3"
+click = "^7.1.2"
+colored = "^1.4.2"
+appdirs = "^1.4.4"
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.8.4"
+black = "^20.8b1"
+mypy = "^0.790"
+pytest = "^6.1.2"
+pytest-cov = "^2.10.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 110
+target-version = ['py37']

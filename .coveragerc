@@ -1,0 +1,8 @@
+# https://stackoverflow.com/questions/9202723/excluding-abstractproperties-from-coverage-reports
+[report]
+exclude_lines =
+    # Have to re-enable the standard pragma
+    pragma: no cover
+
+    # Don't complain if tests don't hit defensive assertion code:
+    raise NotImplementedError
