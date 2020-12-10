@@ -25,4 +25,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line-length = 110
-target-version = ['py38']
+target-version = ['py37']
