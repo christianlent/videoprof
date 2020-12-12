@@ -3,6 +3,7 @@ import pytest
 from typing import cast
 
 from videoprof.attribute import SingleAttribute, CompositeAttribute
+from videoprof.exceptions import MissingAttributeError
 from videoprof.mediainfo import MediaInfoList
 from videoprof.preference import SinglePreference
 
@@ -301,5 +302,5 @@ def test_composite_attribute_all_missing():
         attributes=[attribute1, attribute2], preferences=[], title="Composite Test"
     )
 
-    with pytest.raises(AttributeError):
+    with pytest.raises(MissingAttributeError):
         composite.get_preference(media_info)

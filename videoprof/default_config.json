@@ -102,6 +102,7 @@
                             "level": "error"
                         }
                     ],
+                    "missing_value": "?",
                     "track_type": "Video",
                     "track_attribute": "scan_type"
                 }

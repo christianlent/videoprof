@@ -33,6 +33,7 @@ def get_single_attribute(config_attribute: ConfigAttribute, level_map: LevelMap)
         default_level=default_level,
         track_type=config_attribute["track_type"],
         track_attribute=config_attribute["track_attribute"],
+        missing_value=config_attribute.get("missing_value", None),
     )
     attribute.preferences = [
         get_preference(x, level_map, attribute.render) for x in config_attribute.get("preferences", [])

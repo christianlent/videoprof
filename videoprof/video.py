@@ -8,6 +8,7 @@ from typing import List, Optional, Sequence
 
 from .attribute import Attribute
 from .db import get_tracks
+from .exceptions import MissingAttributeError
 from .mediainfo import get_media_info_list, MediaInfoList
 from .quality import Quality
 
@@ -74,9 +75,8 @@ class SingleVideo(Video):
                 self.qualities.append(
                     Quality(attribute=attribute, preference=attribute.get_preference(tracks))
                 )
-            except AttributeError:
+            except MissingAttributeError:
                 continue
             except Exception as e:
                 print(json.dumps(tracks, indent=4))
-                print(f"Error: {self.filename}", e)
-                exit(1)
+                raise (e)
