@@ -2,33 +2,69 @@ import json
 import os
 
 from pathlib import Path
-from typing import cast, Any, Dict, Sequence
+from typing import cast, Dict, Optional, Sequence, Union
+from typing_extensions import TypedDict
 
 from .attribute import Attribute, SingleAttribute, CompositeAttribute
 from .preference import Preference, SinglePreference
 from .level import Level, DEFAULT_LEVEL
 
-Config = Dict[str, Any]
-ConfigAttribute = Dict[str, Any]
-ConfigPreference = Dict[str, Any]
+
 LevelMap = Dict[str, Level]
+
+
+class ConfigPreference(TypedDict):
+    title: str
+    level: str
+    pattern: Optional[str]
+
+
+class ConfigSingleAttribute(TypedDict):
+    title: str
+    preferences: Sequence[ConfigPreference]
+    track_type: str
+    track_attribute: str
+    render: Optional[str]
+    default_level: Optional[str]
+    missing_value: Optional[str]
+
+
+class ConfigCompositeAttribute(TypedDict):
+    title: str
+    attributes: Sequence[ConfigSingleAttribute]  # noqa: F821
+    preferences: Sequence[ConfigPreference]
+    render: Optional[str]
+    default_level: Optional[str]
+
+
+ConfigAttribute = Union[ConfigSingleAttribute, ConfigCompositeAttribute]
+
+
+class ConfigLevel(TypedDict):
+    color: str
+    flag: bool
+
+
+class Config(TypedDict):
+    attributes: Sequence[ConfigAttribute]
+    levels: Dict[str, ConfigLevel]
 
 
 def get_preference(config_preference: ConfigPreference, level_map: LevelMap, render: str) -> Preference:
     return SinglePreference(
         title=render % (config_preference["title"]),
-        pattern=config_preference.get("pattern", config_preference["title"]),
+        pattern=config_preference.get("pattern", None) or config_preference["title"],
         level=level_map[config_preference["level"]],
     )
 
 
-def get_single_attribute(config_attribute: ConfigAttribute, level_map: LevelMap) -> Attribute:
-    default_level = (
-        level_map[config_attribute["default_level"]] if "default_level" in config_attribute else DEFAULT_LEVEL
-    )
+def get_single_attribute(config_attribute: ConfigSingleAttribute, level_map: LevelMap) -> Attribute:
+    default_level_name = config_attribute.get("default_level", None) or ""
+    default_level = level_map.get(default_level_name, DEFAULT_LEVEL)
+
     attribute = SingleAttribute(
         title=config_attribute["title"],
-        render=config_attribute.get("render", "%s"),
+        render=config_attribute.get("render", None) or "%s",
         preferences=[],
         default_level=default_level,
         track_type=config_attribute["track_type"],
@@ -41,13 +77,13 @@ def get_single_attribute(config_attribute: ConfigAttribute, level_map: LevelMap)
     return attribute
 
 
-def get_composite_attribute(config_attribute: ConfigAttribute, level_map: LevelMap) -> Attribute:
-    default_level = (
-        level_map[config_attribute["default_level"]] if "default_level" in config_attribute else DEFAULT_LEVEL
-    )
+def get_composite_attribute(config_attribute: ConfigCompositeAttribute, level_map: LevelMap) -> Attribute:
+    default_level_name = config_attribute.get("default_level", None) or ""
+    default_level = level_map.get(default_level_name, DEFAULT_LEVEL)
+
     attribute = CompositeAttribute(
         title=config_attribute["title"],
-        render=config_attribute.get("render", "%s"),
+        render=config_attribute.get("render", None) or "%s",
         attributes=[],
         preferences=[],
         default_level=default_level,
@@ -61,9 +97,9 @@ def get_composite_attribute(config_attribute: ConfigAttribute, level_map: LevelM
 
 def get_attribute(config_attribute: ConfigAttribute, level_map: LevelMap) -> Attribute:
     return (
-        get_composite_attribute(config_attribute, level_map)
+        get_composite_attribute(cast(ConfigCompositeAttribute, config_attribute), level_map)
         if "attributes" in config_attribute
-        else get_single_attribute(config_attribute, level_map)
+        else get_single_attribute(cast(ConfigSingleAttribute, config_attribute), level_map)
     )
 
 
