@@ -1,11 +1,10 @@
 from pymediainfo import MediaInfo
-from typing import cast, Any, Dict, Sequence
+from typing import Dict, Sequence, Union
 
-
-MediaTrack = Dict[str, Any]
+MediaAttribute = Union[str, bool, int, float]
+MediaTrack = Dict[str, MediaAttribute]
 MediaInfoList = Sequence[MediaTrack]
 
 
 def get_media_info_list(filename: str) -> MediaInfoList:
-    media_info = MediaInfo.parse(filename)
-    return cast(MediaInfoList, [x.to_data() for x in media_info.tracks])
+    return [x.to_data() for x in MediaInfo.parse(filename).tracks]

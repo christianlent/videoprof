@@ -1,9 +1,12 @@
+import re
+
 from abc import abstractmethod, ABC
 from dataclasses import dataclass
 from typing import List, Optional, Sequence
 
-from .mediainfo import MediaInfoList
+from .exceptions import MissingAttributeError
 from .level import Level, DEFAULT_LEVEL
+from .mediainfo import MediaInfoList
 from .preference import Preference, SinglePreference
 
 
@@ -29,6 +32,7 @@ class SingleAttribute(Attribute):
     track_attribute: str
     default_level: Level = DEFAULT_LEVEL
     render: str = "%s"
+    missing_value: Optional[str] = None
 
     def get_value(self, media_info: MediaInfoList) -> Optional[str]:
         for track in media_info:
@@ -39,16 +43,18 @@ class SingleAttribute(Attribute):
         return None
 
     def get_preference(self, media_info: MediaInfoList) -> Preference:
-        value = self.get_value(media_info)
+        value = self.get_value(media_info) or self.missing_value
 
         if not value:
-            raise AttributeError(f"Value missing for {self.track_type}:{self.track_attribute}")
+            raise MissingAttributeError(f"Value missing for {self.track_type}:{self.track_attribute}")
 
         for preference in self.preferences:
             if preference.match(value):
                 return preference
 
-        preference = SinglePreference(level=self.default_level, title=self.render % (value), pattern=value)
+        preference = SinglePreference(
+            level=self.default_level, title=self.render % (value), pattern=re.escape(value)
+        )
         self.preferences.append(preference)
         return preference
 
@@ -68,14 +74,27 @@ class CompositeAttribute(Attribute):
     render: str = "%s"
 
     def get_preference(self, media_info: MediaInfoList) -> Preference:
-        value_preferences = [attribute.get_preference(media_info) for attribute in self.attributes]
-        value = "".join([preference.get_title() for preference in value_preferences])
+        all_values_missing = True
+        value_list = []
+        for attribute in self.attributes:
+            try:
+                value_list.append(attribute.get_preference(media_info).get_title())
+                all_values_missing = False
+            except MissingAttributeError:
+                pass
+
+        if all_values_missing:
+            raise MissingAttributeError(f"All values missing for composite attribute '{self.title}''")
+
+        value = "".join(value_list)
 
         for preference in self.preferences:
             if preference.match(value):
                 return preference
 
-        preference = SinglePreference(level=self.default_level, title=self.render % (value), pattern=value)
+        preference = SinglePreference(
+            level=self.default_level, title=self.render % (value), pattern=re.escape(value)
+        )
         self.preferences.append(preference)
         return preference
 
