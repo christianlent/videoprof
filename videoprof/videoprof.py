@@ -74,7 +74,7 @@ def show_directories(dir_videos: Dict[Path, List[Video]], only_flagged: bool) ->
                     qualities.append(quality)
 
         if not only_flagged or flag_count:
-            print(f"{directory}:{TAB}{flag_count}/{video_count}{TAB}{render_cluster(qualities)}")
+            print(f"{directory}:{TAB}\u2690 {flag_count}/{video_count}{TAB}{render_cluster(qualities)}")
 
 
 @click.command()
@@ -141,7 +141,11 @@ def main(
                 if video:
                     dir_videos[dir].append(video)
 
-    show_progress(videos, lambda video: video.analyze(attributes, connection))
+    try:
+        show_progress(videos, lambda video: video.analyze(attributes, connection))
+    except OSError:
+        print("Could not analyze videos: make sure libmediainfo is installed!")
+        exit(1)
 
     if files:
         show_files(videos, only_flagged)
