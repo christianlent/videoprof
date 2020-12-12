@@ -4,7 +4,7 @@ import os
 
 from appdirs import user_config_dir, user_cache_dir
 from pathlib import Path
-from typing import Dict, List, Sequence
+from typing import Dict, List, Optional, Sequence
 
 from .attribute import Attribute
 from .config import get_attributes
@@ -15,6 +15,8 @@ from .quality import Quality
 from .video import SingleVideo, Video
 
 APP_NAME = "videoprof"
+DEFAULT_CONFIG = os.path.join(user_config_dir(), APP_NAME, "config.json")
+DEFAULT_CACHE = os.path.join(user_cache_dir(), APP_NAME, "cache.db")
 TAB = "\t"
 
 
@@ -50,14 +52,14 @@ def show_summary(attributes: Sequence[Attribute], videos: Sequence[Video]) -> No
         print(attribute_summary(attribute))
 
 
-def show_flags(videos: Sequence[Video]) -> None:
+def show_files(videos: Sequence[Video], only_flagged: bool) -> None:
     for video in sorted(videos, key=lambda item: item.get_path()):
-        if video.is_flagged():
+        if not only_flagged or video.is_flagged():
             print(f"{video.get_path()}:{TAB}{render_cluster(video.get_qualities())}")
 
 
-def show_directory_summary(directories: Dict[Path, List[Video]], only_flagged: bool) -> None:
-    for directory, videos in sorted(directories.items(), key=lambda item: item[0]):
+def show_directories(dir_videos: Dict[Path, List[Video]], only_flagged: bool) -> None:
+    for directory, videos in sorted(dir_videos.items(), key=lambda item: item[0]):
         flag_count = 0
         video_count = 0
         qualities: List[Quality] = []
@@ -77,76 +79,76 @@ def show_directory_summary(directories: Dict[Path, List[Video]], only_flagged: b
 
 @click.command()
 @click.argument("sources", nargs=-1)
-@click.option(
-    "--config",
-    default=os.path.join(user_config_dir(), APP_NAME, "config.json"),
-    help="JSON configuration file",
-)
-@click.option(
-    "--cache",
-    default=os.path.join(user_cache_dir(), APP_NAME, "cache.db"),
-    help="SQLite cache file",
-)
-@click.option("-s", "--summary", is_flag=True, default=True, help="Turn off attribute summary")
-@click.option("-f", "--flags", is_flag=True, default=False, help="Show individual video flags")
-@click.option("-d", "--dir-summaries", is_flag=True, default=False, help="Show directory summary")
+@click.option("-c", "--config", default=DEFAULT_CONFIG, help="JSON configuration file")
+@click.option("-s", "--sqlite-cache", default=DEFAULT_CACHE, help="SQLite cache file")
+@click.option("-f", "--files", is_flag=True, default=False, help="Show individual file badges and exit")
+@click.option("-d", "--directories", is_flag=True, default=False, help="Show directory badges and exit")
+@click.option("-p", "--directory-depth", default=1, help="Directory depth for summaries")
 @click.option(
     "-o",
     "--only-flagged",
     is_flag=True,
     default=False,
-    help="Show directory summary for only flagged directories",
+    help="Only show individual files or directories on flagged entries",
 )
 @click.option(
     "-m",
     "--media-info",
     is_flag=True,
     default=False,
-    help="Show media info for the first found video and exit",
+    help="Show media info for the first found file and exit",
 )
-@click.option("-p", "--dir-depth", default=1, help="Directory depth for summaries")
 def main(
     sources: Sequence[str],
     config: str,
-    cache: str,
-    summary: bool,
-    flags: bool,
-    dir_summaries: bool,
+    sqlite_cache: str,
+    files: bool,
+    directories: bool,
     only_flagged: bool,
     media_info: bool,
-    dir_depth: int,
+    directory_depth: int,
 ) -> None:
     attributes = get_attributes(Path(config))
-    connection = get_connection(Path(cache))
+    connection = get_connection(Path(sqlite_cache))
     videos: List[Video] = []
-    directories: Dict[Path, List[Video]] = {}
+    dir_videos: Dict[Path, List[Video]] = {}
+
+    def add_video(path: Path) -> Optional[Video]:
+        if not path.is_file():
+            return None
+
+        video = SingleVideo(path=path)
+        if media_info:
+            print(json.dumps(video.get_cached_media_info_list(connection), indent=4))
+            exit(0)
+        videos.append(video)
+        return video
 
     for src in sources:
         origin = Path(src)
-        dir_paths = origin.glob("/".join(["*" for x in range(dir_depth)]))
+        add_video(origin)
 
+        file_paths = origin.glob("*")
+        for file in file_paths:
+            add_video(file)
+
+        dir_paths = origin.glob("/".join(["*" for x in range(directory_depth)]))
         for dir in dir_paths:
-            directories[dir] = []
+            dir_videos[dir] = []
             src_paths = dir.glob("**/*")
             for path in src_paths:
-                if path.is_file():
-                    video = SingleVideo(path=path)
-                    if media_info:
-                        print(json.dumps(video.get_cached_media_info_list(connection), indent=4))
-                        exit(0)
-                    videos.append(video)
-                    directories[dir].append(video)
+                video = add_video(path)
+                if video:
+                    dir_videos[dir].append(video)
 
     show_progress(videos, lambda video: video.analyze(attributes, connection))
 
-    if flags:
-        show_flags(videos)
-        print("")
+    if files:
+        show_files(videos, only_flagged)
+        exit(0)
 
-    if dir_summaries:
-        show_directory_summary(directories, only_flagged)
-        print("")
+    if directories:
+        show_directories(dir_videos, only_flagged)
+        exit(0)
 
-    if summary:
-        show_summary(attributes, videos)
-        print("")
+    show_summary(attributes, videos)

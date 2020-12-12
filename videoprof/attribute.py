@@ -68,8 +68,17 @@ class CompositeAttribute(Attribute):
     render: str = "%s"
 
     def get_preference(self, media_info: MediaInfoList) -> Preference:
-        value_preferences = [attribute.get_preference(media_info) for attribute in self.attributes]
-        value = "".join([preference.get_title() for preference in value_preferences])
+        value_list = []
+        for attribute in self.attributes:
+            try:
+                value_list.append(attribute.get_preference(media_info).get_title())
+            except AttributeError:
+                pass
+
+        if len(value_list) == 0:
+            raise AttributeError(f"All values missing for composite attribute '{self.title}''")
+
+        value = "".join(value_list)
 
         for preference in self.preferences:
             if preference.match(value):
