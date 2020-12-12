@@ -14,6 +14,7 @@ classifiers = [
     "Natural Language :: English",
     "Operating System :: POSIX :: Linux",
     "Topic :: Multimedia :: Video",
+    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
@@ -28,15 +29,16 @@ include=["videoprof/default_config.json"]
 videoprof = "videoprof.videoprof:main"
 
 [tool.poetry.dependencies]
-python = "^3.7"
-pymediainfo = "^5.0.3"
+appdirs = "^1.4.4"
 click = "^7.1.2"
 colored = "^1.4.2"
-appdirs = "^1.4.4"
+dataclasses = { version = "^0.8", python = "<3.7" }
+pymediainfo = "^5.0.3"
+python = "^3.6"
 
 [tool.poetry.dev-dependencies]
-flake8 = "^3.8.4"
 black = "^20.8b1"
+flake8 = "^3.8.4"
 mypy = "^0.790"
 pytest = "^6.1.2"
 pytest-cov = "^2.10.1"
@@ -47,4 +49,4 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line-length = 110
-target-version = ['py37']
+target-version = ['py36']
