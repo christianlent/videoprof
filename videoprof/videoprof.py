@@ -108,6 +108,9 @@ def main(
     media_info: bool,
     directory_depth: int,
 ) -> None:
+    if len(sources) == 0:
+        sources = ["."]
+
     attributes = get_attributes(Path(config))
     connection = get_connection(Path(sqlite_cache))
     videos: List[Video] = []
