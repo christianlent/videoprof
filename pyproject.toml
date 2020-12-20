@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "videoprof"
-version = "0.2.2"
+version = "0.3.0"
 description = "Video Profiler - profile various attributes of local videos like resolution, codec, container, audio channels, and more!"
 authors = ["Christian Lent <christian@lent.us>"]
 license = "MIT"
