@@ -1,7 +1,6 @@
 import json
 import os
-
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from pathlib import Path
 from sqlite3 import Connection
 from typing import List, Optional, Sequence
@@ -9,7 +8,7 @@ from typing import List, Optional, Sequence
 from .attribute import Attribute
 from .db import get_tracks
 from .exceptions import MissingAttributeError
-from .mediainfo import get_media_info_list, MediaInfoList
+from .mediainfo import MediaInfoList, get_media_info_list
 from .quality import Quality
 
 

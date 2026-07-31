@@ -1,5 +1,6 @@
-from pymediainfo import MediaInfo
 from typing import Dict, Sequence, Union
+
+from pymediainfo import MediaInfo
 
 MediaAttribute = Union[str, bool, int, float]
 MediaTrack = Dict[str, MediaAttribute]

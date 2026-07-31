@@ -1,10 +1,10 @@
-import click
 import json
 import os
-
-from appdirs import user_config_dir, user_cache_dir
 from pathlib import Path
 from typing import Dict, List, Optional, Sequence
+
+import click
+from platformdirs import user_cache_dir, user_config_dir
 
 from .attribute import Attribute
 from .config import get_attributes

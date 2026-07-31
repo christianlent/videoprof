@@ -4,3 +4,4 @@ cache.db
 __pycache__
 .coverage
 dist
+.venv

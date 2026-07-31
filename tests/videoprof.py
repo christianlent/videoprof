@@ -1,11 +1,9 @@
 import re
-
 from pathlib import Path
 
 from click.testing import CliRunner
 
 from videoprof.videoprof import main
-
 
 # https://stackoverflow.com/questions/14693701/how-can-i-remove-the-ansi-escape-sequences-from-a-string-in-python
 ansi_escape = re.compile(r"\x1B(?:[@-Z\\-_]|\[[0-?]*[ -/]*[@-~])")

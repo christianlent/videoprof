@@ -14,13 +14,15 @@ pip3 install --user --upgrade videoprof
 
 ### libmediainfo
 
-This application can not work without libmediainfo. To install libmediainfo on Debian or Ubuntu:
+`videoprof` depends on [pymediainfo](https://pypi.org/project/pymediainfo/), which ships a bundled copy of libmediainfo in its wheels for Linux (x86-64/ARM64), macOS (x86-64/ARM64), and Windows (x86-64/x86) — so on those platforms nothing extra needs to be installed.
+
+If you're on an unsupported platform, or installed with `--no-binary pymediainfo`, you'll need to install libmediainfo yourself. On Debian or Ubuntu:
 
 ```bash
 apt-get install libmediainfo0v5
 ```
 
-If you see a message like the following, it must not be installed:
+If you see a message like the following, it must not be installed (and no bundled copy was available):
 
 ```
 Could not analyze videos: make sure libmediainfo is installed!
@@ -28,10 +30,13 @@ Could not analyze videos: make sure libmediainfo is installed!
 
 ### A Compatible Python version:
 
-- 3.6
-- 3.7
-- 3.8
 - 3.9
+- 3.10
+- 3.11
+- 3.12
+- 3.13
+- 3.14
+- 3.15 (pre-release)
 
 ## Usage
 

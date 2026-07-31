@@ -1,8 +1,8 @@
 import re
-
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from .level import Level, DEFAULT_LEVEL
+
+from .level import DEFAULT_LEVEL, Level
 
 
 class Preference(ABC):

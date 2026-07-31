@@ -1,14 +1,11 @@
 import json
 import os
-
 from pathlib import Path
-from typing import cast, Dict, Optional, Sequence, Union
-from typing_extensions import TypedDict
+from typing import Dict, Optional, Sequence, TypedDict, Union, cast
 
-from .attribute import Attribute, SingleAttribute, CompositeAttribute
+from .attribute import Attribute, CompositeAttribute, SingleAttribute
+from .level import DEFAULT_LEVEL, Level
 from .preference import Preference, SinglePreference
-from .level import Level, DEFAULT_LEVEL
-
 
 LevelMap = Dict[str, Level]
 
@@ -99,7 +96,7 @@ def get_attribute(config_attribute: ConfigAttribute, level_map: LevelMap) -> Att
     return (
         get_composite_attribute(cast(ConfigCompositeAttribute, config_attribute), level_map)
         if "attributes" in config_attribute
-        else get_single_attribute(cast(ConfigSingleAttribute, config_attribute), level_map)
+        else get_single_attribute(config_attribute, level_map)
     )
 
 

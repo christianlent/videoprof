@@ -1,11 +1,10 @@
 import re
-
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 from dataclasses import dataclass
 from typing import List, Optional, Sequence
 
 from .exceptions import MissingAttributeError
-from .level import Level, DEFAULT_LEVEL
+from .level import DEFAULT_LEVEL, Level
 from .mediainfo import MediaInfoList
 from .preference import Preference, SinglePreference
 

@@ -1,8 +1,8 @@
-[tool.poetry]
+[project]
 name = "videoprof"
-version = "0.3.0"
+version = "0.4.0"
 description = "Video Profiler - profile various attributes of local videos like resolution, codec, container, audio channels, and more!"
-authors = ["Christian Lent <christian@lent.us>"]
+authors = [{ name = "Christian Lent", email = "christian@lent.us" }]
 license = "MIT"
 readme = "README.md"
 keywords = ["videoprof", "video", "profile", "profiler", "mediainfo", "resolution", "codec", "container", "collection"]
@@ -11,44 +11,56 @@ classifiers = [
     "Environment :: Console",
     "Intended Audience :: End Users/Desktop",
     "Intended Audience :: System Administrators",
-    "License :: OSI Approved :: MIT License",
     "Natural Language :: English",
     "Operating System :: POSIX :: Linux",
     "Topic :: Multimedia :: Video",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
 ]
-packages = [
-    { include = "videoprof" },
-    { include = "videoprof/py.typed" },
+requires-python = ">=3.9"
+dependencies = [
+    "click>=8.1,<9",
+    "colored>=2.2,<3",
+    "platformdirs>=4.0,<5",
+    "pymediainfo>=7.0.1,<8",
 ]
-include=["videoprof/default_config.json"]
 
-[tool.poetry.scripts]
+[project.scripts]
 videoprof = "videoprof.videoprof:main"
 
-[tool.poetry.dependencies]
-appdirs = "^1.4.4"
-click = "^7.1.2"
-colored = "^1.4.2"
-dataclasses = { version = "^0.8", python = "<3.7" }
-pymediainfo = "^5.0.3"
-python = "^3.6"
-typing-extensions = "^3.7.4"
-
-[tool.poetry.dev-dependencies]
-black = "^20.8b1"
-flake8 = "^3.8.4"
-mypy = "^0.790"
-pytest = "^6.1.2"
-pytest-cov = "^2.10.1"
+[dependency-groups]
+dev = [
+    "mypy>=1.11",
+    "pytest>=8.3",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+]
 
 [build-system]
-requires = ["poetry-core>=1.0.0"]
-build-backend = "poetry.core.masonry.api"
+requires = ["uv_build>=0.12.0,<0.13.0"]
+build-backend = "uv_build"
 
-[tool.black]
+[tool.uv.build-backend]
+module-name = "videoprof"
+module-root = ""
+
+[tool.ruff]
 line-length = 110
-target-version = ['py36']
+target-version = "py39"
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I"]
+
+[tool.mypy]
+namespace_packages = true
+check_untyped_defs = true
+files = ["videoprof/**/*.py"]
+
+[[tool.mypy.overrides]]
+module = ["pymediainfo.*"]
+ignore_missing_imports = true

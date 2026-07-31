@@ -1,10 +1,10 @@
+from dataclasses import dataclass
+
 import colored
 from colored import stylize
-from dataclasses import dataclass
-from typing import cast
 
 
-@dataclass
+@dataclass(frozen=True)
 class Level:
     color: str = ""
     flag: bool = False
@@ -12,7 +12,7 @@ class Level:
     def render(self, input: str) -> str:
         if not self.color:
             return input
-        return cast(str, stylize(input, colored.fg(self.color)))
+        return stylize(input, colored.fg(self.color))
 
 
 DEFAULT_LEVEL = Level()

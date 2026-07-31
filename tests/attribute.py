@@ -1,8 +1,8 @@
-import pytest
-
 from typing import cast
 
-from videoprof.attribute import SingleAttribute, CompositeAttribute
+import pytest
+
+from videoprof.attribute import CompositeAttribute, SingleAttribute
 from videoprof.exceptions import MissingAttributeError
 from videoprof.mediainfo import MediaInfoList
 from videoprof.preference import SinglePreference

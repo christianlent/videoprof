@@ -6,20 +6,20 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         os: [ubuntu-latest]
-        python-version: [3.6, 3.7, 3.8, 3.9]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13", "3.14", "3.15"]
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Python ${{ matrix.python-version }}
-        uses: actions/setup-python@v2
+      - uses: actions/checkout@v4
+      - name: Install uv
+        uses: astral-sh/setup-uv@v4
         with:
           python-version: ${{ matrix.python-version }}
       - name: Install dependencies
-        run: |
-          pip install poetry
-          poetry config virtualenvs.create false && poetry install --no-interaction --no-ansi
+        run: uv sync --python ${{ matrix.python-version }}
       - name: Run Tests
-        run: |
-          make test
+        # 3.15 is still pre-release; don't fail the whole build if it breaks.
+        continue-on-error: ${{ matrix.python-version == '3.15' }}
+        run: make test
