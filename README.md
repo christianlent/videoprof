@@ -44,6 +44,7 @@ Could not analyze videos: make sure libmediainfo is installed!
 Usage: videoprof [OPTIONS] [SOURCES]...
 
 Options:
+  --version                      Show the version and exit.
   -c, --config TEXT              JSON configuration file
   -s, --sqlite-cache TEXT        SQLite cache file
   -f, --files                    Show individual file badges and exit

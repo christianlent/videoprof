@@ -78,6 +78,7 @@ def show_directories(dir_videos: Dict[Path, List[Video]], only_flagged: bool) ->
 
 
 @click.command()
+@click.version_option(package_name="videoprof")
 @click.argument("sources", nargs=-1)
 @click.option("-c", "--config", default=DEFAULT_CONFIG, help="JSON configuration file")
 @click.option("-s", "--sqlite-cache", default=DEFAULT_CACHE, help="SQLite cache file")
